@@ -5,8 +5,22 @@ const api = axios.create({
   baseURL: 'https://recondite-baboon.glitch.me/'
 })
 
+// 로컬스토리지에 토큰이 저장이 되어있으면 요청에 토큰에 포함시키고 없으면 포함시키지 않는 코드
+api.interceptors.request.use(function (config) {
+  // localStorage에 token이 있으면 요청에 헤더 설정, 없으면 아무것도 하지 않음
+  const token = localStorage.getItem('token')
+  if (token) {
+    config.headers = config.headers || {}
+    config.headers['Authorization'] = 'Bearer ' + token
+  }
+  return config
+});
+
+
 const templates = {
-  loginForm: document.querySelector('#login-form').content
+  loginForm: document.querySelector('#login-form').content,
+  todoList: document.querySelector('#todo-list').content,
+  todoItem: document.querySelector('#todo-item').content
 }
 
 const rootEl = document.querySelector('.root');
@@ -32,11 +46,53 @@ function drawLoginForm() {
       username, //(username: username)
       password
     })
-    alert(res.data.token)
+    localStorage.setItem('token', res.data.token);
+    // 임시 테스트 코드
+    const res2 = await api.get('/todos');
+    alert(JSON.stringify(res2.data))
   })
 
   // 3. 문서 내부에 삽입하기
   rootEl.appendChild(fragment)
 }
 
-drawLoginForm();
+// 통신해주기 위해 async를 추가
+async function drawTodoList() {
+  const list = [
+    {
+      id: 1,
+      userId: 2,
+      body: 'React 공부',
+      complete: false
+    },
+    {
+      id: 2,
+      userId: 2,
+      body: 'React Router 공부',
+      complete: false
+    }
+  ]
+  // 1. 템플릿 복사하기
+  const fragment = document.importNode(templates.todoList, true)
+
+  // 2. 내용 채우고 이벤트 리스너 등록하기 (ul에 등록하기)
+  const todoListEl = fragment.querySelector('.todo-list')
+
+  // 총 두번 실행된다. (list)
+  list.forEach(todoItem => {
+    // 1. 템플릿 복사하기
+    const fragment = document.importNode(templates.todoItem, true)
+
+    // 2. 내용 채우고 이벤트 리스너 등록하기 (ul에 등록하기)
+    const bodyEl = fragment.querySelector('.body')
+    bodyEl.textContent = todoItem.body
+
+    // 3. 문서 내부에 삽입하기 
+    todoListEl.appendChild(fragment)
+  })
+
+  // 3. 문서 내부에 삽입하기 
+  rootEl.appendChild(fragment)
+}
+
+drawTodoList();
