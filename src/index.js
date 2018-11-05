@@ -1,5 +1,6 @@
 import "@babel/polyfill"; // 이 라인을 지우지 말아주세요!
 import axios from 'axios';
+import { isRegExp } from "util";
 
 const api = axios.create({
   baseURL: 'https://recondite-baboon.glitch.me/'
@@ -79,10 +80,24 @@ async function drawTodoList() {
   const list = res.data;
 
   // 1. 템플릿 복사하기
-  const fragment = document.importNode(templates.todoList, true)
+  const fragment = document.importNode(templates.todoList, true);
 
   // 2. 내용 채우고 이벤트 리스너 등록하기 (ul에 등록하기)
-  const todoListEl = fragment.querySelector('.todo-list')
+  const todoListEl = fragment.querySelector('.todo-list');
+  const todoFormEl = fragment.querySelector('.todo-form');
+  
+  // todolist 한번 그릴때 폼도 한번 그리면 된다.
+  todoFormEl.addEventListener('submit', async e => {
+    e.preventDefault();
+    const body = e.target.elements.body.value;
+    const res = await api.post('/todos', {
+      body,
+      complete: false
+    })
+    if(res.status === 201) {
+      drawTodoList();
+    }
+  })
 
   // 총 두번 실행된다. (list)
   list.forEach(todoItem => {
