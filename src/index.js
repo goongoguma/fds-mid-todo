@@ -103,9 +103,15 @@ async function drawTodoList() {
   list.forEach(todoItem => {
     // 1. 템플릿 복사하기
     const fragment = document.importNode(templates.todoItem, true)
-
+    
     // 2. 내용 채우고 이벤트 리스너 등록하기 (ul에 등록하기)
     const bodyEl = fragment.querySelector('.body')
+    const deleteEl = fragment.querySelector('.delete')
+
+    deleteEl.addEventListener('click', async e => {
+      // 삭제되면 실행되는 부분
+    })
+
     bodyEl.textContent = todoItem.body
 
     // 3. 문서 내부에 삽입하기 
