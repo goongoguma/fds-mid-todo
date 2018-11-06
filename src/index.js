@@ -1,4 +1,4 @@
-import "@babel/polyfill"; // 이 라인을 지우지 말아주세요!
+import "@babel/polyfill"
 import axios from 'axios';
 import { isRegExp } from "util";
 
@@ -32,6 +32,7 @@ function drawLoginForm() {
 
   // 2. 내용 채우고, 이벤트 리스너 등록하기
   const loginFormEl = fragment.querySelector('.login-form');
+
   loginFormEl.addEventListener('submit', async e => {
     e.preventDefault();
     // e: 이벤트 객체
@@ -49,7 +50,7 @@ function drawLoginForm() {
     })
     localStorage.setItem('token', res.data.token);
 
-    // 로그인 뒤에 TodoList 페이지로 넘겨주기 
+    // 로그인 뒤에 TodoList 페이지로 넘겨주기
     drawTodoList()
   })
 
@@ -85,7 +86,7 @@ async function drawTodoList() {
   // 2. 내용 채우고 이벤트 리스너 등록하기 (ul에 등록하기)
   const todoListEl = fragment.querySelector('.todo-list');
   const todoFormEl = fragment.querySelector('.todo-form');
-  
+
   // todolist 한번 그릴때 폼도 한번 그리면 된다.
   todoFormEl.addEventListener('submit', async e => {
     e.preventDefault();
@@ -103,22 +104,24 @@ async function drawTodoList() {
   list.forEach(todoItem => {
     // 1. 템플릿 복사하기
     const fragment = document.importNode(templates.todoItem, true)
-    
+
     // 2. 내용 채우고 이벤트 리스너 등록하기 (ul에 등록하기)
     const bodyEl = fragment.querySelector('.body')
     const deleteEl = fragment.querySelector('.delete')
 
     deleteEl.addEventListener('click', async e => {
       // 삭제되면 실행되는 부분
+      await api.delete(`/todos/${todoItem.id}`);
+      drawTodoList();
     })
 
     bodyEl.textContent = todoItem.body
 
-    // 3. 문서 내부에 삽입하기 
+    // 3. 문서 내부에 삽입하기
     todoListEl.appendChild(fragment)
   })
 
-  // 3. 문서 내부에 삽입하기 
+  // 3. 문서 내부에 삽입하기
   rootEl.textContent='';
   rootEl.appendChild(fragment);
 }
