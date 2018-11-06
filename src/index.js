@@ -86,6 +86,15 @@ async function drawTodoList() {
   // 2. 내용 채우고 이벤트 리스너 등록하기 (ul에 등록하기)
   const todoListEl = fragment.querySelector('.todo-list');
   const todoFormEl = fragment.querySelector('.todo-form');
+  const logoutEl = fragment.querySelector('.logout');
+
+  logoutEl.addEventListener('click', e => {
+    // 로그아웃 절차
+    // 1. 토큰 삭제
+    localStorage.removeItem('token');
+    // 2. 로그인폼 보여주기
+    drawLoginForm()
+  })
 
   // todolist 한번 그릴때 폼도 한번 그리면 된다.
   todoFormEl.addEventListener('submit', async e => {
@@ -132,7 +141,8 @@ async function drawTodoList() {
 if(localStorage.getItem('token')) {
   drawTodoList()
 } else {
+  // 아니라면 로그인 폼을 보여준다.
   drawLoginForm()
 }
-// 아니라면 로그인 폼을 보여준다.
-drawLoginForm();
+
+
