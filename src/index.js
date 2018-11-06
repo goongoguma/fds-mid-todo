@@ -107,10 +107,14 @@ async function drawTodoList() {
       body,
       complete: false
     })
-    drawTodoList();
+    // 비동기 함수이므로 목록이 새로 그려지기 전에 loading indicator가 사라져버린다.
+    // 비동기 함수는 promise를 반환하기 때문에 await 사용가능
+    // 비동기 함수를 호출했을 때 반환되는 promise에는 비동기 함수 내부에서 반환된 값이 채워진다.
+    // drawTodoList 함수의 실해이 끝날 때까지 기다리고 Promise에는 undefiend가 채워진다.
+    await drawTodoList();
 
     // 로딩인디케이터 삭제
-    document.body.classList.remove('loading')
+    document.body.classList.remove('loading');
   })
 
   // 총 두번 실행된다. (list)
