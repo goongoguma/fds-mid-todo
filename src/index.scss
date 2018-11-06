@@ -3,3 +3,15 @@ $main-color: skyblue;
 body {
   background-color: $main-color;
 }
+
+// body 태그에 loading이 붙어있을 때 after에 있는 코드를 작동시킨다.
+body.loading:after {
+  display: block;
+  position: fixed;
+  content: '';
+  background-color: rgba(0,0,0,0.5);
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}

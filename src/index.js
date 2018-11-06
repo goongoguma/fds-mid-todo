@@ -100,14 +100,17 @@ async function drawTodoList() {
   // todolist 한번 그릴때 폼도 한번 그리면 된다.
   todoFormEl.addEventListener('submit', async e => {
     e.preventDefault();
+    // 로딩인디케이터 추가
+    document.body.classList.add('loading');
     const body = e.target.elements.body.value;
     const res = await api.post('/todos', {
       body,
       complete: false
     })
-    if(res.status === 201) {
-      drawTodoList();
-    }
+    drawTodoList();
+
+    // 로딩인디케이터 삭제
+    document.body.classList.remove('loading')
   })
 
   // 총 두번 실행된다. (list)
@@ -130,7 +133,8 @@ async function drawTodoList() {
 
     // 체크박스
     completeEl.addEventListener('click', async e => {
-     e.preventDefault();
+      // 주석을 풀면 비관적 업데이트 방식으로 변한다.
+     // e.preventDefault();
      await api.patch(`/todos/${todoItem.id}`, {
        // !을 사용하면 true를 false로 false를 true로 바꿔준다.
        complete: !todoItem.complete
@@ -162,4 +166,11 @@ if(localStorage.getItem('token')) {
   drawLoginForm()
 }
 
+// 프론트엔드 개발자의 두 종류의  개발방법
 
+// 비관적 업데이트 : 사용자 입력 -> 수정 요청 -> 성공시 화면이 갱신 / 비관적 업데이트일 경우 loading indicator를 사용하는게 좋다.
+
+
+// 낙관적 업데이트 : 사용자 입력 -> 바로 화면 갱신 -> 수정 요청
+// -> 낙관적 업데이트는 수정이 성공했을 때(끝)와 실패했을 때(원상복구필요)의 처리가 다른 단점이 있다.
+// -> 낙관적 업데이트는 사용자 입장에서는 편하지만 개발자 입장에서는 구현하기가 까다롭다.
