@@ -110,10 +110,10 @@ async function drawTodoList() {
     const deleteEl = fragment.querySelector('.delete');
 
     deleteEl.addEventListener('click', async e => {
-      // 삭제되면 실행되는 부분
-      // 삭제가 성공했다면 할일 목록을 다시 그려주기
+
       // 데이터로부터 내가 경로를 만들어 줄 수 있다.
       await api.delete(`/todos/${todoItem.id}`);
+      // 성공 시 할 일 목록 다시 그리기
       drawTodoList();
     })
 
@@ -128,4 +128,11 @@ async function drawTodoList() {
   rootEl.appendChild(fragment);
 }
 
+// 만약 로그인을 한 상태라면 바로 할 일 목록을 보여주고
+if(localStorage.getItem('token')) {
+  drawTodoList()
+} else {
+  drawLoginForm()
+}
+// 아니라면 로그인 폼을 보여준다.
 drawLoginForm();
