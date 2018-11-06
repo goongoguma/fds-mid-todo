@@ -106,11 +106,13 @@ async function drawTodoList() {
     const fragment = document.importNode(templates.todoItem, true)
 
     // 2. 내용 채우고 이벤트 리스너 등록하기 (ul에 등록하기)
-    const bodyEl = fragment.querySelector('.body')
-    const deleteEl = fragment.querySelector('.delete')
+    const bodyEl = fragment.querySelector('.body');
+    const deleteEl = fragment.querySelector('.delete');
 
     deleteEl.addEventListener('click', async e => {
       // 삭제되면 실행되는 부분
+      // 삭제가 성공했다면 할일 목록을 다시 그려주기
+      // 데이터로부터 내가 경로를 만들어 줄 수 있다.
       await api.delete(`/todos/${todoItem.id}`);
       drawTodoList();
     })
